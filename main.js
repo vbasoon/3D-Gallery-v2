@@ -23,22 +23,99 @@ scene.add(camera);
 camera.position.z = 5;
 
 // Light
-let light = new THREE.AmbientLight(0x101010, 1.0);
+const light = new THREE.AmbientLight(0x101010, 1.0);
 console.log(camera.position);
 console.log(light.position);
 //light.position = camera.position;
 scene.add(light);
 
-let sunLight = new THREE.DirectionalLight(0xdddddd, 100);
+const sunLight = new THREE.DirectionalLight(0xdddddd, 100);
 sunLight.position.y = 15;
 scene.add(sunLight)
 
 // Objects
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 'green' });
+const material = new THREE.MeshBasicMaterial({ color: 'blue' });
 const cube = new THREE.Mesh(geometry, material);
+//cube.position.y = -7;
 
 scene.add(cube)
+
+// Textures of floor
+const floorTexture = new THREE.TextureLoader().load('images/Floor.jpg'); 
+floorTexture.wrapS = THREE.RepeatWrapping; // wrapS is horisontal direction
+floorTexture.wrapT = THREE.RepeatWrapping; // wrapT is vertical direction
+floorTexture.repeat.set(20, 20); // how many times to repeat the texture
+
+// let floorTexture = new THREE.TextureLoader().load('images/Floor.jpg');
+
+// Texures of ceiling
+const ceilingTexture = new THREE.TextureLoader().load('images/ceiling.jpg')
+
+// Plane floor
+const planeGeometry = new THREE.PlaneGeometry(45, 45);
+const planeMaterial = new THREE.MeshBasicMaterial({
+    map: floorTexture,
+    side: THREE.DoubleSide,
+    
+});
+const floorPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+floorPlane.rotation.x = Math.PI / 2;
+floorPlane.position.y = -10;
+scene.add(floorPlane)
+
+//Create the walls
+const wallsGroup = new THREE.Group();
+scene.add(wallsGroup);
+
+// Front Wall
+const frontWall = new THREE.Mesh(
+    new THREE.BoxGeometry(50, 20, 0.001),
+    new THREE.MeshBasicMaterial({
+        color: 'green'
+    })
+);
+frontWall.position.z = -20;
+
+
+// Left Wall
+const leftWall = new THREE.Mesh(
+    new THREE.BoxGeometry(50, 20, 0.001),
+    new THREE.MeshBasicMaterial({
+        color: 'red'
+    })
+);
+
+leftWall.rotation.y = Math.PI / 2;
+leftWall.position.x = -20;
+// wallsGroup.add(leftWall)
+
+// Right Wall
+const rightWall = new THREE.Mesh(
+    new THREE.BoxGeometry(50, 20, 0.001),
+    new THREE.MeshBasicMaterial({
+        color: 'yellow'
+    })
+);
+
+rightWall.rotation.y = Math.PI / 2;
+rightWall.position.x = 20;
+
+// Back Wall
+wallsGroup.add(frontWall, leftWall,rightWall);
+
+// Ceiling
+const ceilingGeometry = new THREE.PlaneGeometry(45, 45);
+const ceilingMaterial = new THREE.MeshBasicMaterial({
+    map: ceilingTexture,
+    side: THREE.DoubleSide,
+    
+});
+const ceilingPlane = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+ceilingPlane.rotation.x = Math.PI / 2;
+ceilingPlane.position.y = 10;
+scene.add(ceilingPlane);
+
 
 // Functions
 // Function KeyDown

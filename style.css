@@ -20,6 +20,10 @@ body {
   /* cursor: url("http://www.rw-designer.com/cursor-view/97756.png") 16 16, auto; */
 }
 
+canvas {
+  background-color: #444444;
+}
+
 p,
 img,
 div,
