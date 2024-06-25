@@ -3,6 +3,10 @@ import * as THREE from 'three'
 import { PointerLockControls } from 'three-stdlib';
 //import { orbitControls} from "three/examples/jsm/controls/OrbitControls"
 
+// Variables
+// const menu = document.getElementById("menu");
+// console.log(menu);
+
 // Render
 const renderer = new THREE.WebGLRenderer({ antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -132,17 +136,21 @@ const onKeyDown = (event) => {
   const keyCode = event.keyCode;
 
   switch (keyCode) {
-    case 37: // left arrow key
-      camera.translateX(0.05);
+    case 37:
+    case 65: // left arrow key
+      controls.moveRight(-0.08);
       break;
-    case 38: // up arrow key
-      camera.translateY(-0.05);
+    case 38:
+    case 87: // up arrow key
+      controls.moveForward(0.08);
       break;
-    case 39: // right arrow key
-      camera.translateX(-0.05);
+    case 39:
+    case 68: // right arrow key
+      controls.moveRight(0.08);
       break;
-    case 40: // down arrow key
-      camera.translateY(0.05);
+    case 40:
+    case 83: // down arrow key
+      controls.moveForward(-0.08);
       break;
     
   }
@@ -180,6 +188,34 @@ const painting2 = createPainting("/artworks/1.jpg", 10, 5, new THREE.Vector3(10,
 scene.add(painting1, painting2);
 
 // Controls
+
+const controls = new PointerLockControls(camera, document.body);
+
+// Lock the pointer(controls are activated) and hide the menu when the experience starts
+function startExperience() {
+  // Lock the pointer
+  controls.lock();
+  // Hide the menu
+  hideMenu();
+}
+
+const playButton = document.getElementById("play_button")
+playButton.addEventListener('click', startExperience);
+
+// Hide Menu
+function hideMenu() {
+  const menu = document.getElementById("menu");
+  
+  menu.style.display = 'none';
+}
+
+// Show menu
+function showMenu() {
+  const menu = document.getElementById("menu");
+  menu.style.display = 'block';
+}
+
+controls.addEventListener('unlock', showMenu)
 
 document.addEventListener('keydown', onKeyDown, false);
 // document.addEventListener(
