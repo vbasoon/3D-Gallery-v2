@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
+import { PointerLockControls } from 'three-stdlib';
 //import { orbitControls} from "three/examples/jsm/controls/OrbitControls"
 
 // Render
@@ -24,8 +25,7 @@ camera.position.z = 5;
 
 // Light
 const light = new THREE.AmbientLight(0x101010, 1.0);
-console.log(camera.position);
-console.log(light.position);
+
 //light.position = camera.position;
 scene.add(light);
 
@@ -42,7 +42,8 @@ const cube = new THREE.Mesh(geometry, material);
 scene.add(cube)
 
 // Textures of floor
-const floorTexture = new THREE.TextureLoader().load('images/Floor.jpg'); 
+const textureLoader = new THREE.TextureLoader();
+const floorTexture = textureLoader.load('images/Floor.jpg'); 
 floorTexture.wrapS = THREE.RepeatWrapping; // wrapS is horisontal direction
 floorTexture.wrapT = THREE.RepeatWrapping; // wrapT is vertical direction
 floorTexture.repeat.set(20, 20); // how many times to repeat the texture
@@ -50,7 +51,7 @@ floorTexture.repeat.set(20, 20); // how many times to repeat the texture
 // let floorTexture = new THREE.TextureLoader().load('images/Floor.jpg');
 
 // Texures of ceiling
-const ceilingTexture = new THREE.TextureLoader().load('images/ceiling.jpg')
+const ceilingTexture = new THREE.TextureLoader().load('images/ceiling.jpg');
 
 // Plane floor
 const planeGeometry = new THREE.PlaneGeometry(45, 45);
@@ -61,7 +62,7 @@ const planeMaterial = new THREE.MeshBasicMaterial({
 });
 const floorPlane = new THREE.Mesh(planeGeometry, planeMaterial);
 floorPlane.rotation.x = Math.PI / 2;
-floorPlane.position.y = -10;
+floorPlane.position.y = -1;
 scene.add(floorPlane)
 
 //Create the walls
@@ -102,7 +103,15 @@ rightWall.rotation.y = Math.PI / 2;
 rightWall.position.x = 20;
 
 // Back Wall
-wallsGroup.add(frontWall, leftWall,rightWall);
+
+
+wallsGroup.add(frontWall, leftWall, rightWall);
+
+// Loop through each wall and create the bonding box
+for (let i = 0; i < wallsGroup.children.length; i++) {
+  wallsGroup.children[i].BBox = new THREE.Box3();
+  wallsGroup.children[i].BBox.setFromObject(wallsGroup.children[i]);
+}
 
 // Ceiling
 const ceilingGeometry = new THREE.PlaneGeometry(45, 45);
@@ -147,6 +156,28 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
+// Function Create Painting
+function createPainting(imageURL, width, height, position) {
+  const textureLoader = new THREE.TextureLoader();
+  const paintTexture = textureLoader.load(imageURL);
+  const paintMaterial = new THREE.MeshBasicMaterial({
+    map: paintTexture,
+  });
+  const paintGeometry = new THREE.PlaneGeometry(width, height);
+  const painting = new THREE.Mesh(paintGeometry, paintMaterial);
+  painting.position.set(position.x, position.y, position.z);
+  console.log(position.x);
+  console.log(position.y);
+  console.log(position.z);
+
+  return painting
+} 
+
+const painting1 = createPainting("/artworks/0.jpg", 10, 5, new THREE.Vector3(-10, 5, -19.99));
+const painting2 = createPainting("/artworks/1.jpg", 10, 5, new THREE.Vector3(10, 5, -19.99));
+
+scene.add(painting1, painting2);
 
 // Controls
 
